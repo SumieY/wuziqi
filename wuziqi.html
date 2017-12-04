@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>五子棋</title>
+</head>
+<style>
+    div {
+        width: 600px;
+        height: 600px;
+        margin: 30px auto;
+        background-image: url("img/bak.jpg");
+    }
+
+    #can {
+        border: 1px solid #ccc;
+    }
+</style>
+<body>
+<div>
+    <canvas id="can" width="600" height="600" onclick="play(event)"></canvas>
+</div>
+</body>
+</html>
+<script>
+    var maps = new Array();
+    for (var i = 0; i < 15; i++) {
+        maps[i] = new Array(15);
+        for (var j = 0; j < 15; j++) {
+            maps[i][j] = 0;
+        }
+    }
+
+    var black = new Image();
+    var white = new Image();
+    black.src = "img/black.png";
+    white.src = "img/white.png";
+
+    var isBlack = true;
+
+
+    //初始化棋盘
+    var can = document.getElementById("can");
+    var ctx = can.getContext("2d");
+
+    ctx.strokeStyle = "#fff";
+    for (var a = 0; a < 15; a++) {
+        for (var b = 0; b < 15; b++) {
+            ctx.strokeRect(a * 40, b * 40, 600, 600);
+        }
+    }
+
+    //
+
+    function play(e) {
+        var leftDistance = (window.innerWidth - 600) / 2;
+        var x = e.clientX - leftDistance;
+        var y = e.clientY - 32;
+
+        var row, col;
+        x % 40 < 20 ? (col = parseInt(x / 40)) : (col = parseInt(x / 40 + 1));
+        y % 40 < 20 ? (row = parseInt(y / 40)) : (row = parseInt(y / 40 + 1));
+
+        if (isBlack) {
+            ctx.drawImage(black, col * 40 - 20, row * 40 - 20);
+            isBlack = false;
+            maps[row][col] = 2;
+            iswin(2, row, col);
+        } else {
+            ctx.drawImage(white, col * 40 - 20, row * 40 - 20);
+            isBlack = true;
+            maps[row][col] = 1;
+            iswin(1, row, col);
+        }
+
+        // 参数t 1百 2黑  水平方向
+        function iswin(t, row, col) {
+            var orgrow = row;
+            var orgcol = col;
+            var total = 1;
+            while (col - 1 > 0 && maps[row][col - 1] == t) {
+                total++;
+                col--;
+            }
+            row = orgrow;
+            col = orgcol;
+            while (col + 1 < 15 && maps[row][col + 1] == t) {
+                col++;
+                total++;
+            }
+            if (total >= 5) {
+                if (t == 1) {
+                    alert('白子赢');
+                } else {
+                    alert('黑子赢');
+                }
+            }
+
+            //垂直方向
+            row = orgrow;
+            col = orgcol;
+            total = 1;
+            while (row - 1 > 0 && maps[row - 1][col] == t) {
+                row--;
+                total++;
+            }
+            row = orgrow;
+            col = orgcol;
+            while (row + 1 < 15 && maps[row + 1][col] == t) {
+                row++;
+                total++;
+            }
+            if (total >= 5) {
+                if (t == 1) {
+                    alert('白子赢');
+                } else {
+                    alert('黑子赢');
+                }
+            }
+
+            //左下右上
+            row = orgrow;
+            col = orgcol;
+            total = 1;
+            while (row + 1 < 15 && col - 1 > 0 && maps[row + 1][col - 1] == t) {
+                row++;
+                col--;
+                total++;
+            }
+            row = orgrow;
+            col = orgcol;
+            while (row - 1 > 0 && col + 1 < 15 && maps[row - 1][col + 1] == t) {
+                row--;
+                col++;
+                total++;
+            }
+            if (total >= 5) {
+                if (t == 1) {
+                    alert('白子赢');
+                } else {
+                    alert('黑子赢');
+                }
+            }
+
+            //左上右下
+            row = orgrow;
+            col = orgcol;
+            total = 1;
+            while (row - 1 > 0 && col - 1 > 0 && maps[row - 1][col - 1] == t) {
+                row--;
+                col--;
+                total++;
+            }
+            row = orgrow;
+            col = orgcol;
+            while (row + 1 < 15 && col + 1 < 15 && maps[row + 1][col + 1] == t) {
+                row++;
+                col++;
+                total++;
+            }
+            if (total >= 5) {
+                if (t == 1) {
+                    alert('白子赢');
+                } else {
+                    alert('黑子赢');
+                }
+            }
+        }
+    }
+
+
+</script>
